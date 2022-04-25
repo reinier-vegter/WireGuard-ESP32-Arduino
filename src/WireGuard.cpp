@@ -89,8 +89,8 @@ bool WireGuard::begin(const IPAddress& localIP, const char* privateKey, const ch
 	// Mark the interface as administratively up, link up flag is set automatically when peer connects
 	netif_set_up(wg_netif);
 
-	peer.public_key = remotePeerPublicKey;
 	peer.preshared_key = remotePresharedKey;
+	peer.public_key = remotePeerPublicKey;
 	// Allow all IPs through tunnel
     {
         ip_addr_t allowed_ip = IPADDR4_INIT_BYTES(0, 0, 0, 0);

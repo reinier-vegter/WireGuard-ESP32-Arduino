@@ -751,6 +751,8 @@ err_t wireguardif_add_peer(struct netif *netif, struct wireguardif_peer *p, u8_t
 
 	uint32_t t1 = wireguard_sys_now();
 
+	uint8_t psk[32];
+	wireguard_base64_decode(p->preshared_key, psk, 32);
 	if (wireguard_base64_decode(p->public_key, public_key, &public_key_len)
 			&& (public_key_len == WIREGUARD_PUBLIC_KEY_LEN)) {
 
@@ -761,7 +763,7 @@ err_t wireguardif_add_peer(struct netif *netif, struct wireguardif_peer *p, u8_t
 			peer = peer_alloc(device);
 			if (peer) {
 
-				if (wireguard_peer_init(device, peer, public_key, p->preshared_key)) {
+				if (wireguard_peer_init(device, peer, public_key, psk)) {
 
 					peer->connect_ip = p->endpoint_ip;
 					peer->connect_port = p->endport_port;
