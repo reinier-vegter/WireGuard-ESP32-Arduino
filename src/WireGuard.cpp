@@ -29,7 +29,7 @@ static uint8_t wireguard_peer_index = WIREGUARDIF_INVALID_INDEX;
 
 #define TAG "[WireGuard] "
 
-bool WireGuard::begin(const IPAddress& localIP, const char* privateKey, const char* remotePeerAddress, const char* remotePeerPublicKey, uint16_t remotePeerPort) {
+bool WireGuard::begin(const IPAddress& localIP, const char* privateKey, const char* remotePeerAddress, const char* remotePeerPublicKey, uint16_t remotePeerPort, const char* remotePresharedKey) {
 	struct wireguardif_init_data wg;
 	struct wireguardif_peer peer;
 	ip_addr_t ipaddr = IPADDR4_INIT(static_cast<uint32_t>(localIP));
@@ -90,7 +90,7 @@ bool WireGuard::begin(const IPAddress& localIP, const char* privateKey, const ch
 	netif_set_up(wg_netif);
 
 	peer.public_key = remotePeerPublicKey;
-	peer.preshared_key = NULL;
+	peer.preshared_key = remotePresharedKey;
 	// Allow all IPs through tunnel
     {
         ip_addr_t allowed_ip = IPADDR4_INIT_BYTES(0, 0, 0, 0);
