@@ -31,7 +31,6 @@ static uint8_t wireguard_peer_index = WIREGUARDIF_INVALID_INDEX;
 #define TAG "[WireGuard] "
 
 bool WireGuard::begin(const IPAddress& localIP, const char* privateKey, const char* remotePeerAddress, const char* remotePeerPublicKey, uint16_t remotePeerPort, const char* remotePresharedKey) {
-	Serial.println("Starting WG");
 	struct wireguardif_init_data wg;
 	struct wireguardif_peer peer;
 	ip_addr_t ipaddr = IPADDR4_INIT(static_cast<uint32_t>(localIP));
@@ -91,12 +90,9 @@ bool WireGuard::begin(const IPAddress& localIP, const char* privateKey, const ch
 	// Mark the interface as administratively up, link up flag is set automatically when peer connects
 	netif_set_up(wg_netif);
 
-	Serial.println("WG: 1");
-
 	peer.preshared_key = remotePresharedKey;
 	peer.public_key = remotePeerPublicKey;
 
-	Serial.println("WG: 2");
 	// Allow all IPs through tunnel
     {
         ip_addr_t allowed_ip = IPADDR4_INIT_BYTES(0, 0, 0, 0);
@@ -107,15 +103,10 @@ bool WireGuard::begin(const IPAddress& localIP, const char* privateKey, const ch
 	
 	peer.endport_port = remotePeerPort;
 
-	Serial.println("WG: 3");
-
     // Initialize the platform
     wireguard_platform_init();
-
-	Serial.println("WG: 4");
 	// Register the new WireGuard peer with the netwok interface
 	wireguardif_add_peer(wg_netif, &peer, &wireguard_peer_index);
-	Serial.println("WG: 5");
 	if ((wireguard_peer_index != WIREGUARDIF_INVALID_INDEX) && !ip_addr_isany(&peer.endpoint_ip)) {
 		// Start outbound connection to peer
         log_i(TAG "connecting wireguard...");
@@ -125,9 +116,6 @@ bool WireGuard::begin(const IPAddress& localIP, const char* privateKey, const ch
 		// Set default interface to WG device.
         netif_set_default(wg_netif);
 	}
-
-	Serial.println("WG: 6");
-
 	this->_is_initialized = true;
 	return true;
 }

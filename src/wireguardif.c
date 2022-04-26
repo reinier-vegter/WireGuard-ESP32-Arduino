@@ -754,7 +754,10 @@ err_t wireguardif_add_peer(struct netif *netif, struct wireguardif_peer *p, u8_t
 
 	uint8_t psk[32];
 	size_t psk_size = 32;
-	wireguard_base64_decode(p->preshared_key, psk, &psk_size);
+
+	if (p->preshared_key != NULL) {
+		wireguard_base64_decode(p->preshared_key, psk, &psk_size);
+	}
 	if (wireguard_base64_decode(p->public_key, public_key, &public_key_len)
 			&& (public_key_len == WIREGUARD_PUBLIC_KEY_LEN)) {
 
